@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import DropdownSelect from './DropdownSelect';
 
-const EnvironmentSelector = () => {
+const EnvironmentSelector = ({ onNext }) => {
   const [selections, setSelections] = useState({
-    dev: '',
-    prod: '',
-    qual: ''
+    dev: [],
+    prod: [],
+    qual: []
   });
 
   // Données de test - à remplacer par un appel API vers votre BD
@@ -51,11 +51,12 @@ const EnvironmentSelector = () => {
 
   const handleNext = () => {
     console.log('Sélections:', selections);
-    // Ici vous pouvez traiter les sélections
-    alert(`Sélections:\nDev: ${selections.dev}\nProd: ${selections.prod}\nQual: ${selections.qual}`);
+    if (onNext) {
+      onNext(selections);
+    }
   };
 
-  const isNextDisabled = !selections.dev || !selections.prod || !selections.qual;
+  const isNextDisabled = selections.dev.length === 0 && selections.prod.length === 0 && selections.qual.length === 0;
 
   return (
     <div className="selector-container">

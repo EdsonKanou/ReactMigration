@@ -1,11 +1,19 @@
 import { useState } from 'react';
 
-const DropdownSelect = ({ options, placeholder, value, onChange, disabled }) => {
+const DropdownSelect = ({ options, placeholder, value = [], onChange, disabled }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (option) => {
-    onChange(option);
-    setIsOpen(false);
+    const newValue = value.includes(option)
+      ? value.filter(item => item !== option)
+      : [...value, option];
+    onChange(newValue);
+  };
+
+  const getDisplayText = () => {
+    if (value.length === 0) return placeholder;
+    if (value.length === 1) return value[0];
+    return `${value.length} éléments sélectionnés`;
   };
 
   return (
@@ -15,7 +23,7 @@ const DropdownSelect = ({ options, placeholder, value, onChange, disabled }) => 
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
       >
-        <span>{value || placeholder}</span>
+        <span>{getDisplayText()}</span>
         <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>▼</span>
       </button>
       
@@ -26,10 +34,16 @@ const DropdownSelect = ({ options, placeholder, value, onChange, disabled }) => 
             {options.map((option, index) => (
               <div
                 key={index}
-                className="dropdown-item"
+                className="dropdown-item checkbox-item"
                 onClick={() => handleSelect(option)}
               >
-                {option}
+                <input
+                  type="checkbox"
+                  checked={value.includes(option)}
+                  onChange={() => {}} // Géré par le onClick parent
+                  className="dropdown-checkbox"
+                />
+                <span>{option}</span>
               </div>
             ))}
           </div>
